@@ -1,0 +1,96 @@
+using Amazon;
+using Amazon.Organizations;
+using Amazon.Organizations.Model;
+using Amazon.SecurityToken;
+using Amazon.SecurityToken.Model;
+using Auth0.AuthenticationApi;
+using Auth0.AuthenticationApi.Models;
+using Microsoft.Extensions.Options;
+using Poc.App.Models;
+using Poc.App.Options;
+using Poc.App.Services;
+
+namespace Poc.Infra.ThirdParties;
+
+public class AWSService(IOptionsSnapshot<AwsConfigure> config) : IAwsService
+{
+    private readonly AwsConfigure _config = config.Value;
+
+    public async Task<AccountResult> CreateAwsAccount(IdentityResult identityResult, string targetOU)
+    {
+        var accessKey = identityResult.AccessKeyId;
+        var secretKey = identityResult.SecretKeyId;
+        var awsSessionToken = identityResult.SessionToken;
+        var randomAccount = Guid.CreateVersion7();
+        var accountName = $"DevAccount-{randomAccount}";
+        var email = $"DevTeamTech-{randomAccount}@myEmail.com";
+
+        var client = new AmazonOrganizationsClient(accessKey, secretKey, awsSessionToken, RegionEndpoint.GetBySystemName(_config.DefaultRegion));
+        var response = await client.CreateAccountAsync(new()
+        {
+            AccountName = accountName,
+            Email = email
+        });
+        string requestId = response.CreateAccountStatus.Id;
+        CreateAccountStatus status;
+        do
+        {
+            await Task.Delay(10000);
+            var describe = await client.DescribeCreateAccountStatusAsync(new()
+            {
+                CreateAccountRequestId = requestId
+            });
+            status = describe.CreateAccountStatus;
+
+        } while (status.State == CreateAccountState.IN_PROGRESS);
+
+        var roots = await client.ListRootsAsync(new());
+        string rootId = roots.Roots.First().Id;
+
+        await client.MoveAccountAsync(new MoveAccountRequest
+        {
+            AccountId = status.AccountId,
+            SourceParentId = rootId,
+            DestinationParentId = targetOU
+        });
+        var stsClient = new AmazonSecurityTokenServiceClient(accessKey, secretKey, awsSessionToken, RegionEndpoint.GetBySystemName(_config.DefaultRegion));
+        await stsClient.AssumeRoleAsync(new AssumeRoleRequest
+        {
+            RoleArn = $"arn:aws:iam::{status.AccountId}:role/aws-test",
+            RoleSessionName = "SetupSession"
+        });
+
+        return new()
+        {
+            AccountId = status.AccountId,
+            Name = accountName,
+            Email = email,
+            DestinationOU = targetOU,
+            Status = status.State.Value
+        };
+    }
+
+    public async Task<IdentityResult> SaveAuthenticationAsync(string? accessToken)
+    {
+
+        var awsClient = new AmazonSecurityTokenServiceClient(new AmazonSecurityTokenServiceConfig()
+        {
+            RegionEndpoint = RegionEndpoint.GetBySystemName(_config.DefaultRegion)
+        });
+
+        var request = new AssumeRoleWithWebIdentityRequest
+        {
+            RoleArn = _config.Role,
+            WebIdentityToken = accessToken,
+            RoleSessionName = $"Auth0M2M-{Guid.NewGuid()}",
+        };
+        var response = await awsClient.AssumeRoleWithWebIdentityAsync(request);
+        return new()
+        {
+            AccessKeyId = response.Credentials.AccessKeyId,
+            SecretKeyId = response.Credentials.SecretAccessKey,
+            ExpirationDate = response.Credentials.Expiration,
+            SessionToken = response.Credentials.SessionToken
+        };
+    }
+}
