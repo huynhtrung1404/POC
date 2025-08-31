@@ -6,7 +6,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Auth0.AuthenticationApi" Version="7.39.0" />
     <PackageReference Include="AWSSDK.Core" Version="4.0.0.21" />
     <PackageReference Include="AWSSDK.Organizations" Version="4.0.1.8" />
     <PackageReference Include="AWSSDK.S3" Version="4.0.6.2" />

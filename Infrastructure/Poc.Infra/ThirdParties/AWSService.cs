@@ -3,8 +3,6 @@ using Amazon.Organizations;
 using Amazon.Organizations.Model;
 using Amazon.SecurityToken;
 using Amazon.SecurityToken.Model;
-using Auth0.AuthenticationApi;
-using Auth0.AuthenticationApi.Models;
 using Microsoft.Extensions.Options;
 using Poc.App.Models;
 using Poc.App.Options;

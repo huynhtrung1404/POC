@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<PocContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.Configure<Auth0Config>(builder.Configuration.GetSection("Auth0"));
+builder.Services.AddControllers();
 builder.Services.AddDIService();
 builder.Services.AddCors(options =>
 {
@@ -35,5 +36,6 @@ app.UseHttpsRedirection();
 app.UseCors();
 
 app.MapEndpointDisplay();
+app.MapControllers();
 
 app.Run();
