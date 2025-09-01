@@ -1,6 +1,7 @@
 using Amazon;
 using Amazon.Organizations;
 using Amazon.Organizations.Model;
+using Amazon.Runtime;
 using Amazon.SecurityToken;
 using Amazon.SecurityToken.Model;
 using Microsoft.Extensions.Options;
@@ -89,6 +90,29 @@ public class AWSService(IOptionsSnapshot<AwsConfigure> config) : IAwsService
             SecretKeyId = response.Credentials.SecretAccessKey,
             ExpirationDate = response.Credentials.Expiration,
             SessionToken = response.Credentials.SessionToken
+        };
+    }
+
+    public async Task<IdentityResult> SaveAuthenticationAsync(IdentityResult identityResult, string role, string type)
+    {
+        var session = new SessionAWSCredentials(identityResult.AccessKeyId, identityResult.SecretKeyId, identityResult.SessionToken);
+        var awsClient = new AmazonSecurityTokenServiceClient(session, new AmazonSecurityTokenServiceConfig()
+        {
+            RegionEndpoint = RegionEndpoint.GetBySystemName(_config.DefaultRegion)
+        });
+        var response = await awsClient.AssumeRoleAsync(new AssumeRoleRequest
+        {
+            RoleArn = role,
+            RoleSessionName = $"{type}-{Guid.NewGuid()}"
+        });
+
+        var credential = response.Credentials;
+
+        return new()
+        {
+            AccessKeyId = credential.AccessKeyId,
+            SessionToken = credential.SessionToken,
+            SecretKeyId = credential.SecretAccessKey
         };
     }
 }
