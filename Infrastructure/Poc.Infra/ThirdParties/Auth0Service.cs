@@ -8,14 +8,15 @@ using Poc.Infra.Responses;
 
 namespace Poc.Infra.ThirdParties;
 
-public class Auth0Service(IOptionsSnapshot<Auth0Config> option, ILogger<Auth0Service> logger) : IAuth0Service
+public class Auth0Service(IOptionsSnapshot<Auth0Config> option, ILogger<Auth0Service> logger, IHttpClientFactory httpClientFactory) : IAuth0Service
 {
     private readonly Auth0Config _auth0Config = option.Value;
     private readonly ILogger<Auth0Service> _logger = logger;
+    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
 
     public async Task<Auth0Result> GetAccessTokenAsync()
     {
-        using var httpClient = new HttpClient();
+        var client = _httpClientFactory.CreateClient();
 
         var tokenEndpoint = $"https://{_auth0Config?.Domain ?? string.Empty}/oauth/token";
         _logger.LogInformation("Endpoint for using data {tokenEndpoint}", tokenEndpoint);
@@ -33,11 +34,11 @@ public class Auth0Service(IOptionsSnapshot<Auth0Config> option, ILogger<Auth0Ser
             "application/json"
         );
 
-        var response = await httpClient.PostAsync(tokenEndpoint, content);
+        var response = await client.PostAsync(tokenEndpoint, content);
         response.EnsureSuccessStatusCode();
 
         var responseContent = await response.Content.ReadAsStringAsync();
-        _logger.LogInformation("Result get from auth0 is {result}", responseContent);
+        _logger.LogInformation("Result get from auth0 is {responseContent}", responseContent);
         var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(responseContent);
 
         return new Auth0Result

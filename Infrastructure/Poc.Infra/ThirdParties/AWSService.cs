@@ -56,7 +56,7 @@ public class AWSService(IOptionsSnapshot<AwsConfigure> config) : IAwsService
         await stsClient.AssumeRoleAsync(new AssumeRoleRequest
         {
             RoleArn = $"arn:aws:iam::{status.AccountId}:role/aws-test",
-            RoleSessionName = "SetupSession"
+            RoleSessionName = $"AssumeSession-{Guid.CreateVersion7()}"
         });
 
         return new()
