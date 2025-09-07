@@ -9,11 +9,33 @@ public class UnitOfWork(PocContext context) : IUnitOfWork
 
     public bool SaveChange()
     {
-        return _context.SaveChanges() > 0;
+        using var transaction = _context.Database.BeginTransaction();
+        try
+        {
+            var result = _context.SaveChanges() > 0;
+            transaction.Commit();
+            return result;
+        }
+        catch
+        {
+            transaction.Rollback();
+            throw;
+        }
     }
 
     public async Task<bool> SaveChangeAsync()
     {
-        return (await _context.SaveChangesAsync()) > 0;
+        await using var transaction = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            var result = (await _context.SaveChangesAsync()) > 0;
+            await transaction.CommitAsync();
+            return result;
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
     }
 }
