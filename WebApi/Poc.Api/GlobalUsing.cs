@@ -1,0 +1,1 @@
+global using Poc.Api.Configurations;

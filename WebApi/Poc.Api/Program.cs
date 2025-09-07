@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Poc.Api.Configurations;
 using Poc.Api.Services;
 using Poc.App.Options;
 using Poc.App.Services;
 using Poc.Infra.Context;
+using Poc.App;
+using Poc.Infra;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,8 @@ builder.Services.Configure<AwsConfigure>(builder.Configuration.GetSection("AwsCo
 builder.Services.AddSwaggerDocument();
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<ICachingService, CatchingService>();
+builder.Services.AddApplicationService();
+builder.Services.RegisterInfraService();
 
 var app = builder.Build();
 app.UseOpenApi();

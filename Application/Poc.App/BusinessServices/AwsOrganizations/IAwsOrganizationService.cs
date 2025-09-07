@@ -1,7 +1,7 @@
 namespace Poc.App.BusinessServices.AwsOrganizations;
 
-public interface IAwsOrganization
+public interface IAwsOrganizationService
 {
-    Task<List<AwsOrgDto>> GetListAsync();
+    Task<IEnumerable<AwsOrgDto>> GetListAsync();
     Task<AwsOrgDto> GetDetailAsync(Guid id);
 }
