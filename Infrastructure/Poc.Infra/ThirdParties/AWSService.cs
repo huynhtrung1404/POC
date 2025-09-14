@@ -2,6 +2,7 @@ using Amazon;
 using Amazon.Organizations;
 using Amazon.Organizations.Model;
 using Amazon.Runtime;
+using Amazon.S3.Model;
 using Amazon.SecurityToken;
 using Amazon.SecurityToken.Model;
 using Microsoft.Extensions.Options;
@@ -93,7 +94,7 @@ public class AWSService(IOptionsSnapshot<AwsConfigure> config) : IAwsService
         };
     }
 
-    public async Task<IdentityResult> SaveAuthenticationAsync(IdentityResult identityResult, string role, string type)
+    public async Task<IdentityResult> AssumeRoleAws(IdentityResult identityResult, string role, string type)
     {
         var session = new SessionAWSCredentials(identityResult.AccessKeyId, identityResult.SecretKeyId, identityResult.SessionToken);
         var awsClient = new AmazonSecurityTokenServiceClient(session, new AmazonSecurityTokenServiceConfig()
@@ -114,5 +115,24 @@ public class AWSService(IOptionsSnapshot<AwsConfigure> config) : IAwsService
             SessionToken = credential.SessionToken,
             SecretKeyId = credential.SecretAccessKey
         };
+    }
+
+    public async Task<IEnumerable<(string orgId, string orgName)>> ListOUAsync(IdentityResult identityResult)
+    {
+        var client = new AmazonOrganizationsClient(identityResult.AccessKeyId, identityResult.SecretKeyId, identityResult.SessionToken, RegionEndpoint.GetBySystemName(_config.DefaultRegion));
+        var response = await client.ListRootsAsync(new ListRootsRequest());
+        var result = new List<(string orgId, string orgName)>();
+        var rootMetadata = response.Roots.First();
+        var listOrgRequest = new ListOrganizationalUnitsForParentRequest()
+        {
+            ParentId = rootMetadata.Id
+        };
+        var data = await client.ListOrganizationalUnitsForParentAsync(listOrgRequest);
+        foreach (var item in data.OrganizationalUnits)
+        {
+            result.Add((item.Id, item.Name));
+        }
+
+        return result;
     }
 }

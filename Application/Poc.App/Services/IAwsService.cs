@@ -5,6 +5,7 @@ namespace Poc.App.Services;
 public interface IAwsService
 {
     Task<IdentityResult> SaveAuthenticationAsync(string? accessToken);
-    Task<IdentityResult> SaveAuthenticationAsync(IdentityResult identityResult, string role, string type);
+    Task<IdentityResult> AssumeRoleAws(IdentityResult identityResult, string role, string type);
     Task<AccountResult> CreateAwsAccount(IdentityResult identityResult, string targetOU);
+    Task<IEnumerable<(string orgId, string orgName)>> ListOUAsync(IdentityResult identityResult);
 }

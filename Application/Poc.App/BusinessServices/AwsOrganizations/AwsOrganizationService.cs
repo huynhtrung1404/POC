@@ -1,12 +1,18 @@
+using Poc.App.Services;
 using Poc.Domain.Entities;
 using Poc.Domain.Repositories;
 
 namespace Poc.App.BusinessServices.AwsOrganizations;
 
-public class AwsOrganizationService(IRepository<AwsOrganization> orgRepository, IUnitOfWork unitOfWork) : IAwsOrganizationService
+public class AwsOrganizationService(IRepository<AwsOrganization> orgRepository,
+    IUnitOfWork unitOfWork,
+    IAwsService awsService,
+    IAuth0Service auth0Service) : IAwsOrganizationService
 {
     private readonly IRepository<AwsOrganization> _orgRepository = orgRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IAwsService _awsService = awsService;
+    private readonly IAuth0Service _auth0Service = auth0Service;
 
     public async Task<bool> AddAsync(AwsOrgDto awsOrgDto)
     {
@@ -62,4 +68,13 @@ public class AwsOrganizationService(IRepository<AwsOrganization> orgRepository, 
         });
         return await _unitOfWork.SaveChangeAsync();
     }
+
+    public async Task<IEnumerable<(string id, string name)>> GetListByAwsPortal()
+    {
+        var auth0 = await _auth0Service.GetAccessTokenAsync();
+        var identityResult = await _awsService.SaveAuthenticationAsync(auth0.AccessToken);
+        var listOU = await _awsService.ListOUAsync(identityResult);
+        return listOU;
+    }
+
 }

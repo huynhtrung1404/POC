@@ -7,4 +7,5 @@ public interface IAwsOrganizationService
     Task<bool> AddAsync(AwsOrgDto awsOrgDto);
     Task<bool> UpdateAsync(AwsOrgDto awsOrgDto);
     Task DeleteAsync(Guid id);
+    Task<IEnumerable<(string id, string name)>> GetListByAwsPortal();
 }
