@@ -2,7 +2,6 @@ using Amazon;
 using Amazon.Organizations;
 using Amazon.Organizations.Model;
 using Amazon.Runtime;
-using Amazon.S3.Model;
 using Amazon.SecurityToken;
 using Amazon.SecurityToken.Model;
 using Microsoft.Extensions.Options;

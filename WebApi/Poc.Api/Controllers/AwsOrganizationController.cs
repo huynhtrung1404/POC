@@ -26,4 +26,7 @@ public class AwsOrganizationController(IAwsOrganizationService awsOrganizationSe
         return Ok();
     }
 
+    [HttpGet("GetListOUFromAWS")]
+    public async Task<IActionResult> GetListOUFromAWS() => Ok(await _awsOrganizationService.GetListByAwsPortal());
+
 }
