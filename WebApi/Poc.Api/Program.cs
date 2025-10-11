@@ -11,7 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using NSwag.Generation.Processors.Security;
 using NSwag;
-using Microsoft.AspNetCore.Builder;
+using Poc.App.Commons;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,7 +64,7 @@ builder.Services.AddAuthentication(x =>
         ValidIssuer = builder.Configuration.GetValue<string>("JwtConfig:Issuer"),
         ValidAudience = builder.Configuration.GetValue<string>("JwtConfig:Audience"),
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("JwtConfig:Key") ?? string.Empty))
+            Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("JwtConfig:Key")!))
     };
 });
 
