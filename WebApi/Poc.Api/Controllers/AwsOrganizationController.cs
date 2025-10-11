@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Poc.App.BusinessServices.AwsOrganizations;
 
 namespace Poc.Api.Controllers;
 
+[Authorize]
 public class AwsOrganizationController(IAwsOrganizationService awsOrganizationService) : BaseApiController
 {
     private readonly IAwsOrganizationService _awsOrganizationService = awsOrganizationService;

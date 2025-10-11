@@ -30,6 +30,10 @@ public class Evaluator
         {
             query = query.Skip((int)specification.Skip).Take((int)specification.Take);
         }
+        if (specification.IsNoTracking)
+        {
+            query = query.AsNoTracking();
+        }
 
         return query;
     }

@@ -7,5 +7,5 @@ public class Token : BaseEntity
     public DateTime ExpireTime { get; set; }
     public bool IsDeleted { get; set; }
     public Guid UserId { get; set; }
-    public required User User { get; set; }
+    public User? User { get; set; }
 }

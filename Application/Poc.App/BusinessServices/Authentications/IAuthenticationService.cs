@@ -4,5 +4,5 @@ public interface IAuthenticationService
 {
     Task<AuthenticationDto> LoginAsync(LoginDto login);
     Task LogoutAsync();
-    Task RegisterAsync();
+    Task RegisterAsync(RegisterDto register);
 }

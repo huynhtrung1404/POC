@@ -9,6 +9,9 @@ using Poc.Api.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using NSwag.Generation.Processors.Security;
+using NSwag;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +27,24 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.Configure<AwsConfigure>(builder.Configuration.GetSection("AwsConfigure"));
-builder.Services.AddSwaggerDocument();
+builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
+builder.Services.AddSwaggerDocument(config =>
+{
+    config.OperationProcessors.Add(new OperationSecurityScopeProcessor("JWT token"));
+    config.AddSecurity("JWT token", new OpenApiSecurityScheme
+    {
+        Type = OpenApiSecuritySchemeType.ApiKey,
+        Name = "Authorization",
+        Description = "Copy 'Bearer ' + valid JWT token into field",
+        In = OpenApiSecurityApiKeyLocation.Header
+    });
+    config.PostProcess = (document) =>
+    {
+        document.Info.Version = "v1";
+        document.Info.Title = "MyRest-API";
+        document.Info.Description = "ASP.NET Core 3.1 MyRest-API";
+    };
+});
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<ICachingService, CatchingService>();
 builder.Services.AddApplicationService();

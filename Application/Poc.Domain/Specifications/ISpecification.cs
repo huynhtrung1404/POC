@@ -10,4 +10,5 @@ public interface ISpecification<T>
     long Skip { get; }
     long Take { get; }
     bool IsPagingEnabled { get; }
+    bool IsNoTracking { get; }
 }

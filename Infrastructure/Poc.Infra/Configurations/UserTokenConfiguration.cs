@@ -9,6 +9,6 @@ public class UserTokenConfiguration : BaseConfiguration<Token>
         base.Configure(builder);
         builder.ToTable("Tokens");
         builder.Property(x => x.RefreshToken).IsRequired();
-        builder.Property(x => x.AccessToken).HasMaxLength(500).IsRequired();
+        builder.Property(x => x.AccessToken).HasMaxLength(2000).IsRequired();
     }
 }

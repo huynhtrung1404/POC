@@ -17,6 +17,8 @@ public abstract class BaseSpecification<T>(Expression<Func<T, bool>> criteria) :
 
     public bool IsPagingEnabled { get; private set; } = false;
 
+    public bool IsNoTracking { get; private set; }
+
     protected virtual void AddInclude(Expression<Func<T, object>> include)
     {
         Includes.Add(include);
@@ -30,5 +32,10 @@ public abstract class BaseSpecification<T>(Expression<Func<T, bool>> criteria) :
         Skip = skip;
         Take = take;
         IsPagingEnabled = true;
+    }
+
+    protected void AddTrackingStatus(bool isNoTracking)
+    {
+        IsNoTracking = isNoTracking;
     }
 }
