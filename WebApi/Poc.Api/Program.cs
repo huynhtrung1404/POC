@@ -5,6 +5,10 @@ using Poc.App.Services;
 using Poc.Infra.Context;
 using Poc.App;
 using Poc.Infra;
+using Poc.Api.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,8 +29,27 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<ICachingService, CatchingService>();
 builder.Services.AddApplicationService();
 builder.Services.RegisterInfraService();
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x =>
+{
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration.GetValue<string>("JwtConfig:Issuer"),
+        ValidAudience = builder.Configuration.GetValue<string>("JwtConfig:Audience"),
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("JwtConfig:Key") ?? string.Empty))
+    };
+});
 
 var app = builder.Build();
+app.UseMigration();
 app.UseOpenApi();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
