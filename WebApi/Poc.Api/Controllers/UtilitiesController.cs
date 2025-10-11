@@ -13,4 +13,7 @@ public class UtilitiesController(IUtilityService utilitiesService) : BaseApiCont
         var result = await _utilitiesService.GetMigrationLogAsync();
         return Ok(result);
     }
+
+    [HttpGet("GetNewGuid")]
+    public IActionResult GetNewGuidAsync(int quantity) => Ok(_utilitiesService.ListGuid(quantity));
 }
