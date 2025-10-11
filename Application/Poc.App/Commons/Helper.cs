@@ -23,4 +23,23 @@ public static class Helper
         return sb.ToString();
     }
 
+    public static string Base64StringEncodeUrl(string input)
+    {
+        byte[] inputBytes = Encoding.UTF8.GetBytes(input);
+        string base64 = Convert.ToBase64String(inputBytes);
+        return base64.TrimEnd('=').Replace('+', '-').Replace('/', '_');
+    }
+
+    public static string Base64StringDecodeUrl(string input)
+    {
+        string base64 = input.Replace('-', '+').Replace('_', '/');
+        switch (base64.Length % 4)
+        {
+            case 2: base64 += "=="; break;
+            case 3: base64 += "="; break;
+        }
+        byte[] bytes = Convert.FromBase64String(base64);
+        return Encoding.UTF8.GetString(bytes);
+    }
+
 }

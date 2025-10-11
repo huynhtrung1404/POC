@@ -71,11 +71,13 @@ public class AuthenticationService(IRepository<Token> tokenRepository,
 
     private string GenerateToken(string username, string email, string sessionId, int expiredTime)
     {
+
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, username),
             new(ClaimTypes.Email, email),
-            new("Session", sessionId)
+            new("Session", sessionId),
+            new(ClaimTypes.Sid, username)
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfigValue.Key!));

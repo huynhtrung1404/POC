@@ -38,4 +38,13 @@ public class UnitOfWork(PocContext context) : IUnitOfWork
             throw;
         }
     }
+
+    public async Task<IEnumerable<T>> SelectWithSqlRaw<T>(string sql)
+    {
+        var migrations = await _context.Database
+            .SqlQueryRaw<T>(sql)
+            .ToListAsync();
+        return migrations;
+
+    }
 }
