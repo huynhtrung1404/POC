@@ -17,4 +17,8 @@ public class AuthController(IAuthenticationService authenticationService) : Base
         await _authenticationService.RegisterAsync(register);
         return Ok();
     }
+
+    [HttpPost("refreshToken")]
+    public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenDto model) =>
+        Ok(await _authenticationService.RefreshTokenAsync(model));
 }

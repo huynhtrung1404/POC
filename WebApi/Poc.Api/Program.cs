@@ -12,6 +12,7 @@ using System.Text;
 using NSwag.Generation.Processors.Security;
 using NSwag;
 using Poc.App.Commons;
+using Poc.Api.Infrastructures;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,10 +46,12 @@ builder.Services.AddSwaggerDocument(config =>
         document.Info.Description = "ASP.NET Core 3.1 MyRest-API";
     };
 });
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<ICachingService, CatchingService>();
 builder.Services.AddApplicationService();
 builder.Services.RegisterInfraService();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

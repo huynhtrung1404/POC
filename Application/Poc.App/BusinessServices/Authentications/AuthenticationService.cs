@@ -1,5 +1,3 @@
-
-using System.ComponentModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -8,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Poc.App.Commons;
 using Poc.App.Options;
+using Poc.App.Services;
 using Poc.Domain.Entities;
 using Poc.Domain.Repositories;
 
@@ -16,12 +15,14 @@ namespace Poc.App.BusinessServices.Authentications;
 public class AuthenticationService(IRepository<Token> tokenRepository,
     IUnitOfWork unitOfWork,
     IRepository<User> userRepository,
-    IOptionsSnapshot<JwtConfig> jwtConfig) : IAuthenticationService
+    IOptionsSnapshot<JwtConfig> jwtConfig,
+    IUserService userService) : IAuthenticationService
 {
     private readonly IRepository<Token> _tokenRepository = tokenRepository;
     private readonly IRepository<User> _userRepository = userRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly JwtConfig _jwtConfigValue = jwtConfig.Value;
+    private readonly IUserService _userService = userService;
 
     public async Task<AuthenticationDto> LoginAsync(LoginDto login)
     {
@@ -67,6 +68,21 @@ public class AuthenticationService(IRepository<Token> tokenRepository,
         };
         await _userRepository.AddAsync(data);
         await _unitOfWork.SaveChangeAsync();
+    }
+
+    public async Task<AuthenticationDto> RefreshTokenAsync(RefreshTokenDto model)
+    {
+        var token = await _tokenRepository.GetItemAsync(new TokenSpecification(model.RefreshToken!))
+            ?? throw new Exception("No data found");
+        var newAccessToken = GenerateToken(_userService.UserName, _userService.Email, _userService.SessionId, 10);
+        token.AccessToken = newAccessToken;
+        await _unitOfWork.SaveChangeAsync();
+        return new()
+        {
+            AccessToken = token.AccessToken,
+            RefreshToken = token.RefreshToken,
+            ExpireTime = token.ExpireTime
+        };
     }
 
     private string GenerateToken(string username, string email, string sessionId, int expiredTime)

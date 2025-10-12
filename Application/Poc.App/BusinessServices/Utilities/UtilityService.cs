@@ -1,5 +1,3 @@
-
-using System.Text;
 using Poc.Domain.Repositories;
 
 namespace Poc.App.BusinessServices.Utilities;
