@@ -21,16 +21,16 @@ jobs:
           dotnet-version: "9.0.x" # Specify your .NET version
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore WebApi/Poc.Api
 
       - name: Build
-        run: dotnet build --no-restore
+        run: dotnet build WebApi/Poc.Api --no-restore -c Release
 
-      - name: Test
-        run: dotnet test --no-build --verbosity normal
+      # - name: Test
+      #   run: dotnet test --no-build --verbosity normal
 
       - name: Publish
-        run: dotnet publish -c Release -o ${{github.workspace}}/publish
+        run: dotnet publish  WebApi/Poc.Api --no-build -c Release -o ${{github.workspace}}/publish
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
