@@ -6,17 +6,17 @@ on:
       - main # or your default branch
   pull_request:
     branches:
-      - feature/* # or your default branch
+      - main # or your default branch
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "9.0.x" # Specify your .NET version
 
@@ -33,7 +33,7 @@ jobs:
         run: dotnet publish -c Release -o ${{github.workspace}}/publish
 
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: net-core-app
           path: ${{github.workspace}}/publish
