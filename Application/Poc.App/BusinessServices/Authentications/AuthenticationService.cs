@@ -116,4 +116,14 @@ public class AuthenticationService(IRepository<Token> tokenRepository,
         rng.GetBytes(randomNumber);
         return Convert.ToBase64String(randomNumber);
     }
+
+    public UserInfoDto GetUserInfo()
+    {
+        return new()
+        {
+            UserName = _userService.UserName,
+            Email = _userService.Email,
+            SessionId = _userService.SessionId
+        };
+    }
 }

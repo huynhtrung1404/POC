@@ -1,4 +1,4 @@
-using System.Security.Claims;
+using Poc.App.Commons;
 using Poc.App.Services;
 
 namespace Poc.Api.Infrastructures;
@@ -7,9 +7,10 @@ public class UserService(IHttpContextAccessor httpContextAccessor) : IUserServic
 {
     private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
-    public string UserName => _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+    public string UserName => _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(x => x.Type == ConstantClaim.UserName)?.Value!;
 
-    public string Email => _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value!;
+    public string Email => _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(x => x.Type == ConstantClaim.Email)?.Value!;
 
-    public string SessionId => _httpContextAccessor.HttpContext?.User.FindFirst("SessionId")?.Value!;
+    public string SessionId => _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(x => x.Type == ConstantClaim.Session)?.Value!;
+
 }

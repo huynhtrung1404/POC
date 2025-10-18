@@ -21,4 +21,9 @@ public class AuthController(IAuthenticationService authenticationService) : Base
     [HttpPost("refreshToken")]
     public async Task<IActionResult> RefreshTokenAsync([FromBody] RefreshTokenDto model) =>
         Ok(await _authenticationService.RefreshTokenAsync(model));
+
+    [HttpGet("userInfo")]
+    public IActionResult GetUserInfo() =>
+        Ok(_authenticationService.GetUserInfo());
+
 }

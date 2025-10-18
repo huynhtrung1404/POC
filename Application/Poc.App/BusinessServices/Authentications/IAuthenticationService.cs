@@ -1,3 +1,5 @@
+using Poc.App.Services;
+
 namespace Poc.App.BusinessServices.Authentications;
 
 public interface IAuthenticationService
@@ -6,4 +8,5 @@ public interface IAuthenticationService
     Task LogoutAsync();
     Task RegisterAsync(RegisterDto register);
     Task<AuthenticationDto> RefreshTokenAsync(RefreshTokenDto model);
+    UserInfoDto GetUserInfo();
 }
