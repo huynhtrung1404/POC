@@ -16,4 +16,10 @@ public class UtilitiesController(IUtilityService utilitiesService) : BaseApiCont
 
     [HttpGet("GetNewGuid")]
     public IActionResult GetNewGuidAsync(int quantity) => Ok(_utilitiesService.ListGuid(quantity));
+
+    [HttpGet("EncodeBase64")]
+    public IActionResult EncodeBase64(string input) => Ok(_utilitiesService.EncodeBase64(input));
+
+    [HttpGet("DecodeBase64")]
+    public IActionResult DecodeBase64(string input) => Ok(_utilitiesService.DecodeBase64(input));
 }

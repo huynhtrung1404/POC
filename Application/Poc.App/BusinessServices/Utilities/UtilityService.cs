@@ -1,3 +1,4 @@
+using Poc.App.Commons;
 using Poc.Domain.Repositories;
 
 namespace Poc.App.BusinessServices.Utilities;
@@ -5,6 +6,13 @@ namespace Poc.App.BusinessServices.Utilities;
 public class UtilityService(IUnitOfWork unitOfWork) : IUtilityService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
+    public string DecodeBase64(string input) =>
+     Helper.Base64Decode(input);
+
+    public string EncodeBase64(string input) =>
+         Helper.Base64Encode(input);
+
 
     public async Task<IEnumerable<MigrationLogDto>> GetMigrationLogAsync()
     {

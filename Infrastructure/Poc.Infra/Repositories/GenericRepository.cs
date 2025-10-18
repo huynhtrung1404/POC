@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Reflection.Metadata;
-using System.Threading.Tasks;
-using Poc.Domain.Repositories;
 using Poc.Domain.Specifications;
 using Poc.Infra.Context;
 using Poc.Infra.Specifications;

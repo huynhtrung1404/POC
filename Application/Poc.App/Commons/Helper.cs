@@ -42,4 +42,19 @@ public static class Helper
         return Encoding.UTF8.GetString(bytes);
     }
 
+    public static string Base64Encode(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+            return string.Empty;
+
+        byte[] plainTextBytes = Encoding.UTF8.GetBytes(input);
+        return Convert.ToBase64String(plainTextBytes);
+    }
+
+    public static string Base64Decode(string input)
+    {
+        byte[] base64EncodedBytes = Convert.FromBase64String(input);
+        return Encoding.UTF8.GetString(base64EncodedBytes);
+    }
+
 }
