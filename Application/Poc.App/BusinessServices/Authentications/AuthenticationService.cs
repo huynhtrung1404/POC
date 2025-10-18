@@ -90,10 +90,9 @@ public class AuthenticationService(IRepository<Token> tokenRepository,
 
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, username),
-            new(ClaimTypes.Email, email),
-            new("Session", sessionId),
-            new(ClaimTypes.Sid, username)
+            new(ConstantClaim.UserName, username),
+            new(ConstantClaim.Email, email),
+            new(ConstantClaim.Session, sessionId),
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfigValue.Key!));
@@ -110,7 +109,7 @@ public class AuthenticationService(IRepository<Token> tokenRepository,
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    private string GenerateRefreshToken()
+    private static string GenerateRefreshToken()
     {
         var randomNumber = new byte[32];
         using var rng = RandomNumberGenerator.Create();

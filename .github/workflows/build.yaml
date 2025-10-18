@@ -37,3 +37,4 @@ jobs:
         with:
           name: net-core-app
           path: ${{github.workspace}}/publish
+          retention-days: 7
