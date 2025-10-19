@@ -6,6 +6,7 @@ public interface ISpecification<T>
 {
     Expression<Func<T, bool>> Criteria { get; }
     List<Expression<Func<T, object>>> Includes { get; }
+    Expression<Func<T, object>> Selection { get; }
     List<string> IncludeString { get; }
     long Skip { get; }
     long Take { get; }

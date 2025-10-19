@@ -10,6 +10,8 @@ public abstract class BaseSpecification<T>(Expression<Func<T, bool>> criteria) :
     public List<Expression<Func<T, object>>> Includes { get; } = [];
 
     public List<string> IncludeString { get; } = [];
+    public Expression<Func<T, object>> Selection { get; private set; } = null!;
+
 
     public long Skip { get; private set; }
 
@@ -27,15 +29,20 @@ public abstract class BaseSpecification<T>(Expression<Func<T, bool>> criteria) :
     {
         IncludeString.Add(includeString);
     }
-    protected void ApplyPaging(int skip, int take)
+    protected void ApplyPaging(int pageNumber, int pageSize)
     {
-        Skip = skip;
-        Take = take;
+        Skip = (pageNumber - 1) * pageSize;
+        Take = pageSize;
         IsPagingEnabled = true;
     }
 
     protected void AddTrackingStatus(bool isNoTracking)
     {
         IsNoTracking = isNoTracking;
+    }
+
+    protected void AddSelection(Expression<Func<T, object>> selection)
+    {
+        Selection = selection;
     }
 }

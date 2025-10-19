@@ -14,4 +14,6 @@ public interface IGenericRepository<T>
     Task<IEnumerable<T>> GetAllAsync();
     Task<IEnumerable<T>> GetAllAsync(ISpecification<T> specification);
     Task<T?> GetItemAsync(ISpecification<T> specification);
+
+    Task<int> CountAsync(ISpecification<T> specification);
 }

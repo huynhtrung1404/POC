@@ -40,7 +40,7 @@ public class GenericRepository<T>(PocContext context) : IGenericRepository<T> wh
 
     public async Task<IEnumerable<T>> GetAllAsync(ISpecification<T> specification)
     {
-        return await Evaluator.GetQuery(_dbSet, specification).ToListAsync();
+        return await DbEvaluator.GetQuery(_dbSet, specification).ToListAsync();
     }
 
     public T GetById(Guid id)
@@ -55,11 +55,16 @@ public class GenericRepository<T>(PocContext context) : IGenericRepository<T> wh
 
     public async Task<T?> GetItemAsync(ISpecification<T> specification)
     {
-        return await Evaluator.GetQuery<T>(_dbSet, specification).FirstOrDefaultAsync();
+        return await DbEvaluator.GetQuery<T>(_dbSet, specification).FirstOrDefaultAsync();
     }
 
     public void Update(T entity)
     {
         _dbSet.Update(entity);
+    }
+
+    public async Task<int> CountAsync(ISpecification<T> specification)
+    {
+        return await DbEvaluator.CountValue<T>(_dbSet, specification);
     }
 }
