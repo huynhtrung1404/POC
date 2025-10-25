@@ -11,5 +11,7 @@ public class UserConfiguration : BaseConfiguration<User>
         builder.Property(x => x.UserName).IsRequired();
         builder.Property(x => x.Email).HasMaxLength(150);
         builder.Property(x => x.Password).HasMaxLength(500);
+        builder.HasIndex(x => x.UserName).IsUnique();
+        builder.HasIndex(x => new { x.Password, x.Email });
     }
 }

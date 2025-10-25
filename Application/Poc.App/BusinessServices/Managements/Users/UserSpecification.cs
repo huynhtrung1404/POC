@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-using System.Security.Cryptography.X509Certificates;
 using Poc.App.Specifications;
 using Poc.Domain.Entities;
 

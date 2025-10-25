@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Poc.App.BusinessServices.Managements.Users;
 
-namespace Poc.Api.Controllers;
+namespace Poc.Api.Controllers.Managements;
 
 [Authorize]
 public class UserController(IUserManageService userManageService) : BaseApiController
