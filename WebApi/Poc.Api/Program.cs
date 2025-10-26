@@ -11,7 +11,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using NSwag.Generation.Processors.Security;
 using NSwag;
-using Poc.App.Commons;
 using Poc.Api.Infrastructures;
 
 var builder = WebApplication.CreateBuilder(args);
