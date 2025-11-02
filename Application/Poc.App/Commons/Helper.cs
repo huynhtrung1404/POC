@@ -56,5 +56,4 @@ public static class Helper
         byte[] base64EncodedBytes = Convert.FromBase64String(input);
         return Encoding.UTF8.GetString(base64EncodedBytes);
     }
-
 }
