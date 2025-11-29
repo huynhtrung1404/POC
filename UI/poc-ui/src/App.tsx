@@ -1,6 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { AuthLayoutWrapper } from "./utils/WrapperLayout";
 import Login from "./features/auths/Login";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import Home from "./features/admins/home/Home";
+import MainLayout from "./components/layout/MainLayout";
+import AuthLayout from "./components/layout/AuthLayout";
 
 function App() {
   return (
@@ -9,11 +12,21 @@ function App() {
         <Route
           path="/login"
           element={
-            <AuthLayoutWrapper title="Login">
+            <AuthLayout>
               <Login />
-            </AuthLayoutWrapper>
+            </AuthLayout>
           }
         />
+        <Route element={<ProtectedRoute />}>
+          <Route
+            path="/"
+            element={
+              <MainLayout>
+                <Home />{" "}
+              </MainLayout>
+            }
+          />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
