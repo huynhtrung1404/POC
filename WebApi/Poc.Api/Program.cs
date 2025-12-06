@@ -28,6 +28,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.Configure<AwsConfigure>(builder.Configuration.GetSection("AwsConfigure"));
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
+builder.Services.Configure<EncryptionConfig>(builder.Configuration.GetSection("Encryption"));
 builder.Services.AddSwaggerDocument(config =>
 {
     config.OperationProcessors.Add(new OperationSecurityScopeProcessor("JWT token"));

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Poc.App.BusinessServices.Utilities;
+using Poc.App.Services;
 
 namespace Poc.Api.Controllers;
 
@@ -22,4 +23,12 @@ public class UtilitiesController(IUtilityService utilitiesService) : BaseApiCont
 
     [HttpGet("DecodeBase64")]
     public IActionResult DecodeBase64(string input) => Ok(_utilitiesService.DecodeBase64(input));
+
+    [HttpGet("EncryptData")]
+    public IActionResult EncryptData([FromServices] IEncryptService encryptService, [FromQuery] string input)
+        => Ok(encryptService.Encrypt(input));
+
+    [HttpGet("DecryptData")]
+    public IActionResult DecryptData([FromServices] IEncryptService encryptService, [FromQuery] string input)
+        => Ok(encryptService.Decrypt(input));
 }

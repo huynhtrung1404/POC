@@ -1,6 +1,4 @@
 using Poc.App.Services;
-using Poc.Domain.Entities;
-using Poc.Domain.Repositories;
 
 namespace Poc.App.BusinessServices.AwsOrganizations;
 
