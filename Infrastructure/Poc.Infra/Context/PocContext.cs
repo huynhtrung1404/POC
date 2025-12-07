@@ -1,16 +1,39 @@
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Poc.App.Services;
 using Poc.Domain.Core;
 using Poc.Infra.Configurations;
 
 namespace Poc.Infra.Context;
 
-public class PocContext(DbContextOptions<PocContext> options, IUserService userService) : DbContext(options)
+public class PocContext(DbContextOptions<PocContext> options, IUserService userService, IEncryptService? encryptedService) : DbContext(options)
 {
     private readonly IUserService _userService = userService;
+    private readonly IEncryptService? _encryptedService = encryptedService;
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(BaseConfiguration<>).Assembly);
+
+        if (_encryptedService != null)
+        {
+            var converter = new ValueConverter<string, string>(
+                v => _encryptedService.Encrypt(v),
+                v => _encryptedService.Decrypt(v)
+            );
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.GetProperties())
+                {
+                    var data = property?.FindAnnotation("Encrypted")?.Value;
+                    if (property?.ClrType == typeof(string) &&
+                        data is bool == true)
+                    {
+                        property.SetValueConverter(converter);
+                    }
+                }
+            }
+        }
     }
 
     public override int SaveChanges()

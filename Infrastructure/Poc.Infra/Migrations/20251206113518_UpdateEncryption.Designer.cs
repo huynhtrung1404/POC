@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Poc.Infra.Context;
 
@@ -11,9 +12,11 @@ using Poc.Infra.Context;
 namespace Poc.Infra.Migrations
 {
     [DbContext(typeof(PocContext))]
-    partial class PocContextModelSnapshot : ModelSnapshot
+    [Migration("20251206113518_UpdateEncryption")]
+    partial class UpdateEncryption
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,143 +24,6 @@ namespace Poc.Infra.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Poc.Domain.Entities.AuthConfig", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AdditionParam")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Audience")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Authority")
-                        .HasColumnType("nvarchar(450)")
-                        .HasAnnotation("Encrypted", true);
-
-                    b.Property<string>("ClientId")
-                        .HasColumnType("nvarchar(450)")
-                        .HasAnnotation("Encrypted", true);
-
-                    b.Property<string>("ClientSecret")
-                        .HasColumnType("nvarchar(450)")
-                        .HasAnnotation("Encrypted", true);
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<string>("Domain")
-                        .HasColumnType("nvarchar(450)")
-                        .HasAnnotation("Encrypted", true);
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostLogoutRedirectUri")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProviderName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RedirectUri")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.Property<string>("Scopes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenantId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClientId")
-                        .IsUnique()
-                        .HasFilter("[ClientId] IS NOT NULL");
-
-                    b.HasIndex("ClientSecret")
-                        .IsUnique()
-                        .HasFilter("[ClientSecret] IS NOT NULL");
-
-                    b.HasIndex("Domain", "Audience", "Authority");
-
-                    b.ToTable("AuthConfigs", (string)null);
-                });
-
-            modelBuilder.Entity("Poc.Domain.Entities.AwsAccount", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AccountId")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasAnnotation("Encrypted", true);
-
-                    b.Property<string>("AccountName")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)")
-                        .HasAnnotation("Encrypted", true);
-
-                    b.Property<Guid>("AwsOrganizationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrganizationName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AwsOrganizationId");
-
-                    b.ToTable("AwsAccount");
-                });
 
             modelBuilder.Entity("Poc.Domain.Entities.AwsOrganization", b =>
                 {
@@ -447,17 +313,6 @@ namespace Poc.Infra.Migrations
                     b.HasIndex("UsersId");
 
                     b.ToTable("RoleUser");
-                });
-
-            modelBuilder.Entity("Poc.Domain.Entities.AwsAccount", b =>
-                {
-                    b.HasOne("Poc.Domain.Entities.AwsOrganization", "AwsOrganization")
-                        .WithMany()
-                        .HasForeignKey("AwsOrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AwsOrganization");
                 });
 
             modelBuilder.Entity("Poc.Domain.Entities.Token", b =>

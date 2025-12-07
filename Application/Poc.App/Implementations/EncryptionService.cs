@@ -13,7 +13,7 @@ public class EncryptionService(IOptionsSnapshot<EncryptionConfig> encryptionConf
 
     public string Decrypt(string input)
     {
-        if (string.IsNullOrEmpty(input)) return string.Empty;
+        if (string.IsNullOrEmpty(input)) return input;
 
         var fullData = Convert.FromBase64String(input);
         var iv = fullData[..16];
@@ -33,7 +33,7 @@ public class EncryptionService(IOptionsSnapshot<EncryptionConfig> encryptionConf
     public string Encrypt(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
-            return string.Empty;
+            return input;
         using var aes = Aes.Create();
         aes.Key = GetKey();
         aes.GenerateIV();

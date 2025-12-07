@@ -17,7 +17,7 @@ public static class MiddlewareExtension
         {
             // Log the error (use your logger)
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-            logger.LogError(ex, "An error occurred while migrating the database.");
+            logger.LogError("An error occurred while migrating the database with message {Message} and type {Ex}", ex.Message, ex);
         }
         // You can now use the serviceProvider to resolve services
         return applicationBuilder;
