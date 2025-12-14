@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Poc.Domain\Poc.Domain.csproj" />
+    <ProjectReference Include="..\..\Libs\Poc.Mediator\Poc.Mediator.csproj" />
   </ItemGroup>
 
   <ItemGroup>
