@@ -18,5 +18,6 @@ public class AuthConfigConfiguration : BaseConfiguration<AuthConfig>
         builder.Property(x => x.Authority).IsEncrypted();
         builder.Property(x => x.Domain).IsEncrypted();
         builder.Property(x => x.ProviderName).IsEncrypted();
+        builder.Property(x => x.Audience).IsEncrypted();
     }
 }

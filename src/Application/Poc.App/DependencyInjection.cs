@@ -1,4 +1,6 @@
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Poc.Mediator;
 
 namespace Poc.App;
 
@@ -10,6 +12,7 @@ public static class DependencyInjection
                     .AddClasses(x => x.Where(type => !type.Name.EndsWith("Specification")))
                     .AsImplementedInterfaces()
                     .WithScopedLifetime());
+        services.AddMediator(Assembly.GetExecutingAssembly());
         return services;
     }
 }
