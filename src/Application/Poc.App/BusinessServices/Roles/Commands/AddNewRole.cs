@@ -3,7 +3,7 @@ using Poc.Mediator;
 
 namespace Poc.App.BusinessServices.Roles.Commands;
 
-public record AddNewRole(RoleDto Model) : IRequest<bool>;
+public record AddNewRole(AddRoleDto Model) : IRequest<bool>;
 
 public class AddNewRoleHandler(IRepository<Role> roleRepository, IUnitOfWork unitOfWork) : IRequestHandler<AddNewRole, bool>
 {

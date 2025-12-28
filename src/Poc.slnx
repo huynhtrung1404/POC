@@ -1,0 +1,20 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Application/">
+    <Project Path="Application/Poc.App/Poc.App.csproj" />
+    <Project Path="Application/Poc.Domain/Poc.Domain.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="Infrastructure/Poc.Infra/Poc.Infra.csproj" />
+  </Folder>
+  <Folder Name="/Libs/">
+    <Project Path="Libs/Poc.Mediator/Poc.Mediator.csproj" />
+  </Folder>
+  <Folder Name="/WebApi/">
+    <Project Path="WebApi/Poc.Api/Poc.Api.csproj" />
+  </Folder>
+</Solution>

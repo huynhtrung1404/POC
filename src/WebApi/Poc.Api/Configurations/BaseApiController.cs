@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Poc.Mediator;
 
 namespace Poc.Api.Configurations;
 
@@ -6,5 +7,4 @@ namespace Poc.Api.Configurations;
 [Route("api/[controller]")]
 public abstract class BaseApiController : ControllerBase
 {
-
 }
