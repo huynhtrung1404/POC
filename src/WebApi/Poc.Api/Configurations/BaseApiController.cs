@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Poc.Mediator;
 
 namespace Poc.Api.Configurations;
 

@@ -485,3 +485,4 @@ $RECYCLE.BIN/
 
 #Custom Vscode
 .vscode/*
+src/.vscode/*
