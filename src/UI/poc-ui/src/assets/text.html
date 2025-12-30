@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tom's Developer Resume</title>
+    <style>
+      :root {
+        --primary: #2c3e50;
+        --accent: #3498db;
+        --text: #333;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        line-height: 1.6;
+        color: var(--text);
+        background: #fff;
+        padding: 2.5rem;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .editable,
+      .section-title {
+        outline: none;
+        padding: 2px 0;
+        border-bottom: 1px dashed #ccc;
+      }
+      .editable:focus,
+      .section-title:focus {
+        background-color: #f9f9f9;
+        border-bottom: 1px solid var(--accent);
+      }
+      h1 {
+        font-size: 34px;
+        color: var(--primary);
+        margin-bottom: 10px;
+      }
+      h2.section-header {
+        font-size: 22px;
+        color: var(--primary);
+        margin: 30px 0 14px 0;
+        padding-bottom: 6px;
+        border-bottom: 2px solid var(--accent);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .action-btn {
+        font-size: 12px;
+        border: none;
+        padding: 2px 6px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-left: 6px;
+      }
+      .action-btn.add {
+        background: #d5e8d4;
+        color: #277432;
+      }
+      .action-btn.remove {
+        background: #f8cecc;
+        color: #990000;
+      }
+      .action-btn.pdf {
+        background: #ffeaa7;
+        color: #6a4c03;
+        padding: 6px 12px;
+        border-radius: 20px;
+        margin-top: 10px;
+        display: inline-block;
+      }
+      .action-btn.add:hover {
+        background: #b6d7a8;
+      }
+      .action-btn.remove:hover {
+        background: #ea9999;
+      }
+      .action-btn.pdf:hover {
+        background: #ffd76a;
+      }
+      h3 {
+        font-size: 18px;
+        margin: 18px 0 10px 0;
+        color: var(--primary);
+      }
+      p,
+      ul {
+        margin-bottom: 12px;
+      }
+      ul {
+        padding-left: 20px;
+      }
+      li {
+        margin-bottom: 8px;
+        display: flex;
+        align-items: flex-start;
+      }
+      li > .editable {
+        flex: 1;
+        min-height: 1.4em;
+      }
+      .header-contact {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 24px;
+      }
+      .job {
+        margin-bottom: 26px;
+      }
+      .company-date {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        font-style: italic;
+        color: #555;
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+      .section {
+        break-inside: avoid;
+      }
+      .toolbar {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--accent);
+        color: white;
+        padding: 10px 16px;
+        border-radius: 30px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        display: flex;
+        gap: 10px;
+      }
+      .toolbar button {
+        background: white;
+        color: var(--accent);
+        border: none;
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .toolbar button:hover {
+        background: #f0f0f0;
+      }
+      code {
+        background: #f1f1f1;
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-family: Consolas, monospace;
+        font-size: 0.95em;
+      }
+
+      /* 🖨️ Khi in PDF: ẩn nút + ẩn dòng trống */
+      @media print {
+        .toolbar,
+        .action-btn,
+        .pdf-export-btn {
+          display: none !important;
+        }
+        body {
+          padding: 1.5cm;
+        }
+        .editable,
+        .section-title {
+          border: none !important;
+          background: none !important;
+          outline: none !important;
+        }
+        li {
+          display: block !important;
+        }
+        li > .editable {
+          display: inline !important;
+        }
+        /* Ẩn dòng trống (chỉ chứa "New item..." hoặc trống) */
+        li:has(.editable:empty),
+        li:has(.editable:only-child):has(.editable:empty),
+        li .editable:empty,
+        li .editable:only-child:empty {
+          display: none !important;
+        }
+        /* Ẩn dòng có đúng text "New item..." */
+        li .editable:only-child:has-text("New item...") {
+          /* CSS không hỗ trợ :has-text → xử lý bằng JS trước in */
+        }
+      }
+    </style>
+  </head>
+  <body contenteditable="false">
+    <!-- Toolbar -->
+    <div class="toolbar" id="mainToolbar">
+      <span id="editBtn" onclick="toggleEdit()">✏️ Edit</span>
+      <button onclick="addSection()" title="Add new section">➕</button>
+    </div>
+
+    <!-- Header -->
+    <header>
+      <h1 contenteditable="true">Lê Nhựt Nam (Tom)</h1>
+      <div class="header-contact">
+        <span contenteditable="true">📍 Ho Chi Minh City, Vietnam</span>
+        <span contenteditable="true">📧 le.nhutnam.dev@example.com</span>
+        <span contenteditable="true">📱 +84 123 456 789</span>
+        <span contenteditable="true"
+          >🔗
+          <a href="https://linkedin.com/in/yourname" target="_blank"
+            >LinkedIn</a
+          ></span
+        >
+        <span contenteditable="true"
+          >🐱
+          <a href="https://github.com/yourname" target="_blank">GitHub</a></span
+        >
+      </div>
+    </header>
+
+    <!-- Professional Summary -->
+    <section class="section">
+      <h2 class="section-header">
+        <span class="section-title" contenteditable="true"
+          >Professional Summary</span
+        >
+      </h2>
+      <p contenteditable="true">
+        Senior Full-Stack Developer with
+        <strong>7+ years of experience</strong> building secure, scalable web
+        applications using <strong>C#, ASP.NET Core, and React.js</strong>.
+        Expertise in modern .NET architecture, data encryption at the EF Core
+        level, and CI/CD automation via <strong>GitHub Actions</strong>.
+        Passionate about writing clean, maintainable code and solving complex
+        business problems with robust technical solutions.
+      </p>
+    </section>
+
+    <!-- Key Project -->
+    <section class="section">
+      <h2 class="section-header">
+        <span class="section-title" contenteditable="true"
+          >Key Project: [Your Project Name Here]</span
+        >
+      </h2>
+      <p contenteditable="true">
+        <em
+          >Senior Full-Stack Developer | ASP.NET Core • React • EF Core • GitHub
+          Actions • Azure</em
+        >
+      </p>
+      <ul id="project-list"></ul>
+      <button
+        class="action-btn add"
+        onclick="addBullet(document.getElementById('project-list'))"
+      >
+        ➕ Add Point
+      </button>
+    </section>
+
+    <!-- Technical Expertise -->
+    <section class="section">
+      <h2 class="section-header">
+        <span class="section-title" contenteditable="true"
+          >Technical Expertise</span
+        >
+      </h2>
+      <ul id="skills-list"></ul>
+      <button
+        class="action-btn add"
+        onclick="addBullet(document.getElementById('skills-list'))"
+      >
+        ➕ Add Skill
+      </button>
+    </section>
+
+    <!-- Professional Experience -->
+    <section class="section">
+      <h2 class="section-header">
+        <span class="section-title" contenteditable="true"
+          >Professional Experience</span
+        >
+      </h2>
+      <div class="job">
+        <h3 contenteditable="true">Senior Full-Stack Developer</h3>
+        <div class="company-date">
+          <span contenteditable="true">[Your Company] – Ho Chi Minh City</span>
+          <span contenteditable="true">2022 – Present</span>
+        </div>
+        <ul id="experience-list"></ul>
+        <button
+          class="action-btn add"
+          onclick="addBullet(document.getElementById('experience-list'))"
+        >
+          ➕ Add Achievement
+        </button>
+      </div>
+    </section>
+
+    <!-- Education -->
+    <section class="section">
+      <h2 class="section-header">
+        <span class="section-title" contenteditable="true">Education</span>
+      </h2>
+      <p contenteditable="true">
+        <strong>Bachelor of Computer Science</strong><br />
+        University of Technology – VNU-HCM<br />
+        <em>Graduated: 2017</em>
+      </p>
+    </section>
+
+    <!-- Export Button -->
+    <div style="text-align: center; margin-top: 30px">
+      <button class="action-btn pdf" onclick="exportToPDF()">
+        📥 Export as PDF
+      </button>
+    </div>
+
+    <!-- Footer Note -->
+    <div
+      style="
+        margin-top: 20px;
+        padding: 12px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        font-size: 13px;
+        color: #555;
+      "
+    >
+      💡 <strong>Tip:</strong> Click <strong>"✏️ Edit"</strong> to edit. Use
+      <strong>➕/🗑️</strong> to manage content. Click
+      <strong>"Export as PDF"</strong> to save.
+    </div>
+
+    <script>
+      let editMode = false;
+
+      function toggleEdit() {
+        editMode = !editMode;
+        document.body.contentEditable = editMode;
+        document.querySelectorAll("[contenteditable]").forEach((el) => {
+          el.contentEditable = editMode;
+        });
+        document.querySelectorAll(".section-title").forEach((el) => {
+          el.contentEditable = editMode;
+        });
+        document.getElementById("editBtn").textContent = editMode
+          ? "✅ Done"
+          : "✏️ Edit";
+      }
+
+      function createRemoveButton() {
+        const btn = document.createElement("button");
+        btn.className = "action-btn remove";
+        btn.textContent = "🗑️";
+        btn.type = "button";
+        return btn;
+      }
+
+      function createEditableSpan(text = "New item...") {
+        const span = document.createElement("span");
+        span.className = "editable";
+        span.contentEditable = true;
+        span.textContent = text;
+        return span;
+      }
+
+      function addBullet(ul) {
+        if (!editMode) {
+          alert("Please enter Edit mode first.");
+          return;
+        }
+
+        const li = document.createElement("li");
+        const span = createEditableSpan();
+        const removeBtn = createRemoveButton();
+
+        removeBtn.onclick = function () {
+          if (confirm("Remove this item?")) {
+            li.remove();
+          }
+        };
+
+        li.appendChild(span);
+        li.appendChild(removeBtn);
+        ul.appendChild(li);
+        setTimeout(() => span.focus(), 10);
+      }
+
+      function addSection() {
+        if (!editMode) {
+          alert("Please enter Edit mode first.");
+          return;
+        }
+        const sectionTitle = prompt(
+          "Enter new section title (e.g., Certifications, Awards):"
+        );
+        if (!sectionTitle) return;
+
+        const section = document.createElement("section");
+        section.className = "section";
+
+        const header = document.createElement("h2");
+        header.className = "section-header";
+        const titleSpan = document.createElement("span");
+        titleSpan.className = "section-title";
+        titleSpan.contentEditable = true;
+        titleSpan.textContent = sectionTitle;
+        header.appendChild(titleSpan);
+
+        const ul = document.createElement("ul");
+        const addButton = document.createElement("button");
+        addButton.className = "action-btn add";
+        addButton.textContent = "➕ Add Item";
+        addButton.type = "button";
+        addButton.onclick = () => addBullet(ul);
+
+        addBullet(ul); // Thêm 1 dòng mặc định
+
+        section.appendChild(header);
+        section.appendChild(ul);
+        section.appendChild(addButton);
+
+        const footer = document.querySelector('div[style*="margin-top: 20px"]');
+        document.body.insertBefore(section, footer);
+      }
+
+      // Clean empty/"New item..." lines before printing
+      function cleanEmptyItems() {
+        document.querySelectorAll("li").forEach((li) => {
+          const span = li.querySelector(".editable");
+          if (span) {
+            const text = span.textContent.trim();
+            if (text === "" || text === "New item...") {
+              li.style.display = "none"; // Ẩn trước in
+            } else {
+              li.style.display = ""; // Hiện lại nếu có nội dung
+            }
+          }
+        });
+      }
+
+      function restoreEmptyItems() {
+        document.querySelectorAll("li").forEach((li) => {
+          li.style.display = "";
+        });
+      }
+
+      function exportToPDF() {
+        if (editMode) {
+          alert("Please exit Edit mode before exporting.");
+          return;
+        }
+        cleanEmptyItems(); // Ẩn dòng trống
+        window.print();
+        // restoreEmptyItems(); // Không cần restore vì in xong trang giữ nguyên
+      }
+
+      // === Load sample data ===
+      document.addEventListener("DOMContentLoaded", () => {
+        const projectList = document.getElementById("project-list");
+        addSampleItem(
+          projectList,
+          "Developed a high-security internal platform for managing [e.g., legal contracts], handling <strong>[X,000+]</strong> sensitive documents."
+        );
+        addSampleItem(
+          projectList,
+          "Implemented <strong>custom property-level encryption</strong> using <code>IEncryptionService</code> and <code>IEntityTypeBuilder</code>."
+        );
+
+        const skillsList = document.getElementById("skills-list");
+        addSampleItem(
+          skillsList,
+          "<strong>Languages:</strong> C#, TypeScript, SQL"
+        );
+        addSampleItem(
+          skillsList,
+          "<strong>Backend:</strong> ASP.NET Core, EF Core, Web API"
+        );
+
+        const expList = document.getElementById("experience-list");
+        addSampleItem(
+          expList,
+          "Led development of secure contract management system."
+        );
+        addSampleItem(
+          expList,
+          "Implemented EF Core property-level encryption."
+        );
+      });
+
+      function addSampleItem(ul, htmlText) {
+        const li = document.createElement("li");
+        const span = createEditableSpan();
+        span.innerHTML = htmlText;
+        const removeBtn = createRemoveButton();
+        removeBtn.onclick = function () {
+          if (confirm("Remove this item?")) {
+            li.remove();
+          }
+        };
+        li.appendChild(span);
+        li.appendChild(removeBtn);
+        ul.appendChild(li);
+      }
+    </script>
+  </body>
+</html>
