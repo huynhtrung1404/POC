@@ -1,6 +1,7 @@
 name: Build and Publish .NET Core Application
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main # or your default branch
@@ -21,16 +22,16 @@ jobs:
           dotnet-version: "9.0.x" # Specify your .NET version
 
       - name: Restore dependencies
-        run: dotnet restore WebApi/Poc.Api
+        run: dotnet restore src/WebApi/Poc.Api
 
       - name: Build
-        run: dotnet build WebApi/Poc.Api --no-restore -c Release
+        run: dotnet build src/WebApi/Poc.Api --no-restore -c Release
 
       # - name: Test
       #   run: dotnet test --no-build --verbosity normal
 
       - name: Publish
-        run: dotnet publish  WebApi/Poc.Api --no-build -c Release -o ${{github.workspace}}/publish
+        run: dotnet publish  src/WebApi/Poc.Api --no-build -c Release -o ${{github.workspace}}/publish
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4
