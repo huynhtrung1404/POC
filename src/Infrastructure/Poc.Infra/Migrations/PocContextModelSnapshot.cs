@@ -17,7 +17,7 @@ namespace Poc.Infra.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.7")
+                .HasAnnotation("ProductVersion", "10.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -32,7 +32,8 @@ namespace Poc.Infra.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Audience")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasAnnotation("Encrypted", true);
 
                     b.Property<string>("Authority")
                         .HasColumnType("nvarchar(450)")
@@ -70,7 +71,8 @@ namespace Poc.Infra.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProviderName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Encrypted", true);
 
                     b.Property<string>("RedirectUri")
                         .HasColumnType("nvarchar(max)");
@@ -200,6 +202,55 @@ namespace Poc.Infra.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AwsOrganization");
+                });
+
+            modelBuilder.Entity("Poc.Domain.Entities.M2MAuthentication", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ClientId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ClientSecret")
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Encrypted", true);
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int>("GrantType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LoginType")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<string>("Scope")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId", "LoginType");
+
+                    b.ToTable("M2MAuthentication");
                 });
 
             modelBuilder.Entity("Poc.Domain.Entities.Note", b =>

@@ -15,6 +15,7 @@ public static class DependencyInjection
         service.AddScoped<IAwsService, AWSService>();
         service.AddScoped<IAuth0Service, Auth0Service>();
         service.AddScoped<IEncryptService, EncryptionService>();
+        service.AddScoped<IM2MAuthenticationService, M2MAuthenticationService>();
         service.AddHttpClient();
         return service;
     }
