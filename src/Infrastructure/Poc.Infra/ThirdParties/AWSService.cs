@@ -11,6 +11,7 @@ using Poc.App.Services;
 
 namespace Poc.Infra.ThirdParties;
 
+[Obsolete("This function need to be removed because it not useful for coding")]
 public class AWSService(IOptionsSnapshot<AwsConfigure> config) : IAwsService
 {
     private readonly AwsConfigure _config = config.Value;

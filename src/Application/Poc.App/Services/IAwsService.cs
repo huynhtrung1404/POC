@@ -2,6 +2,7 @@ using Poc.App.Models;
 
 namespace Poc.App.Services;
 
+[Obsolete]
 public interface IAwsService
 {
     Task<IdentityResult> SaveAuthenticationAsync(string? accessToken);

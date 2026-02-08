@@ -2,12 +2,13 @@ using Amazon.Runtime;
 using Amazon.SecurityToken;
 using Microsoft.Extensions.Caching.Memory;
 using Poc.App.Models;
+using Poc.App.Services;
 
 namespace Poc.Infra.Commons;
 
 public class AwsCredentialCache(IAmazonSecurityTokenService amazonSTS,
     IMemoryCache memoryCache,
-    SemaphoreSlim semaphoreSlim)
+    SemaphoreSlim semaphoreSlim) : IAwsCredential
 {
     private readonly IAmazonSecurityTokenService _amazonSts = amazonSTS;
     private readonly IMemoryCache _memoryCache = memoryCache;

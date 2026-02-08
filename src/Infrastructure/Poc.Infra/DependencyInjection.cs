@@ -1,5 +1,6 @@
 using Poc.App.Implementations;
 using Poc.App.Services;
+using Poc.Infra.Commons;
 using Poc.Infra.Repositories;
 using Poc.Infra.ThirdParties;
 
@@ -17,6 +18,8 @@ public static class DependencyInjection
         service.AddScoped<IEncryptService, EncryptionService>();
         service.AddScoped<IM2MAuthenticationService, M2MAuthenticationService>();
         service.AddHttpClient();
+        service.AddMemoryCache();
+        service.AddSingleton<IAwsCredential, AwsCredentialCache>();
         return service;
     }
 }
